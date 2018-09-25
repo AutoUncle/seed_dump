@@ -89,7 +89,7 @@ class SeedDump
         io.write(",\n  ") unless last_batch
       end
 
-      io.write("\n]#{active_record_import_options(options)})\n")
+      io.write("\n]#{active_record_import_options(options) || active_record_create_options(options)})\n")
 
       if options[:file].present?
         nil
@@ -103,6 +103,12 @@ class SeedDump
       return unless options[:import] && options[:import].is_a?(Hash)
 
       ', ' + options[:import].map { |key, value| "#{key}: #{value}" }.join(', ')
+    end
+  
+    def active_record_create_options(options)
+      return unless options[:options_for_create] && options[:options_for_create].is_a?(Hash)
+      
+      ', ' + options[:options_for_create].map { |key, value| "#{key}: #{value}" }.join(', ')
     end
 
     def attribute_names(records, options)
